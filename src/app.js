@@ -5,6 +5,7 @@ const path = require("path");
 const expressLayouts = require("express-ejs-layouts");
 const routes = require("./routes/index");
 const dashboardRoute = require("./routes/dashboard");
+const connectDB = require("./config/db");
 
 const app = express();
 const PORT = 8080 || process.env.PORT;
@@ -12,6 +13,8 @@ const PORT = 8080 || process.env.PORT;
 //body parser
 app.use(express.urlencoded({ extended: true })); // parse incoming reqst from post reqst in body parser
 app.use(express.json()); // parse incoming reqst in json
+
+connectDB();
 
 //view engine
 app.use(expressLayouts);
