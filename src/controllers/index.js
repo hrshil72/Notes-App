@@ -3,7 +3,15 @@ const homepage = (req, res) => {
     title: "Main Page",
   };
 
-  res.render("index", { locals });
+  res.render("index", { locals, layout: "../views/layouts/front-page.ejs" });
 };
 
-module.exports = { homepage };
+const aboutpage = (req, res) => {
+  const locals = {
+    title: "About",
+  };
+
+  res.render("about", { locals });
+};
+
+module.exports = { homepage, aboutpage };
