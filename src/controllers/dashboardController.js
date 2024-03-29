@@ -187,4 +187,19 @@ const dashboardUpdatePage = async (req, res) => {
   res.redirect("/dashboard");
 };
 
-module.exports = { dashboardPage, dashboardViewPage, dashboardUpdatePage };
+const dashboardDeleteNote = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Note.deleteOne({ _id: id }).where({ user: req.user.id });
+    res.redirect("/dashboard");
+  } catch (error) {
+    res.send("Something went wrong");
+  }
+};
+
+module.exports = {
+  dashboardPage,
+  dashboardViewPage,
+  dashboardUpdatePage,
+  dashboardDeleteNote,
+};
