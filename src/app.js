@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const expressLayouts = require("express-ejs-layouts");
+const methodOverride = require("method-override");
 const routes = require("./routes/index");
 const dashboardRoute = require("./routes/dashboard");
 const authRoute = require("./routes/auth");
@@ -29,6 +30,8 @@ app.use(passport.session());
 //body parser
 app.use(express.urlencoded({ extended: true })); // parse incoming reqst from post reqst in body parser
 app.use(express.json()); // parse incoming reqst in json
+
+app.use(methodOverride("_method"));
 
 // db connection
 connectDB();
