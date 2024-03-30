@@ -119,7 +119,7 @@ const dashboardPage = async (req, res) => {
     const notes = await Note.aggregate([
       {
         $sort: {
-          createdAt: -1,
+          updatedAt: -1,
         },
       },
       {
@@ -178,6 +178,7 @@ const dashboardUpdatePage = async (req, res) => {
       {
         title: req.body.title,
         body: req.body.body,
+        updatedAt: Date.now(),
       }
     ).where({ user: req.user.id });
   } catch (error) {
@@ -197,9 +198,60 @@ const dashboardDeleteNote = async (req, res) => {
   }
 };
 
+const dashboardAddNote = async (req, res) => {
+  res.render("dashboard/add-note", {
+    layout: "../views/layouts/dashboard",
+  });
+};
+
+const dashboardSubmitNote = async (req, res) => {
+  try {
+    req.body.user = req.user.id;
+    await Note.create(req.body);
+    res.redirect("/dashboard");
+  } catch (error) {
+    res.send("Something went wrong");
+  }
+};
+const dashboardSearch = async (req, res) => {
+  try {
+    res.render("dashboard/search", {
+      searchResults: "",
+      layout: "../views/layouts/dashboard",
+    });
+  } catch (error) {
+    res.send("Something went wrong");
+  }
+};
+const dashboardSearchSubmit = async (req, res) => {
+  try {
+    let searchTerm = req.body.searchTerm;
+    const searchNoSpecialChars = searchTerm.replace(/[^a-zA-Z0-9]/g, "");
+
+    const searchResults = await Note.find({
+      $or: [
+        { title: { $regex: new RegExp(searchNoSpecialChars, "i") } },
+        { body: { $regex: new RegExp(searchNoSpecialChars, "i") } },
+      ],
+    }).where({ user: req.user.id });
+
+    res.render("dashboard/search", {
+      searchResults,
+      layout: "../views/layouts/dashboard",
+    });
+  } catch (error) {
+    console.log(error);
+    res.send("Something went wrong");
+  }
+};
+
 module.exports = {
   dashboardPage,
+  dashboardAddNote,
+  dashboardSubmitNote,
   dashboardViewPage,
   dashboardUpdatePage,
   dashboardDeleteNote,
+  dashboardSearch,
+  dashboardSearchSubmit,
 };
